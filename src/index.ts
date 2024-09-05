@@ -4,7 +4,7 @@ import mime from "mime";
 
 import { encodeHLS } from "./ffmpeg.js";
 import { convertPlaylist } from "./convert.js";
-import { basename, join } from "path";
+import { basename, dirname, join } from "path";
 import { BlossomClient } from "blossom-client-sdk";
 import { finalizeEvent, generateSecretKey, nip19 } from "nostr-tools";
 
@@ -30,10 +30,14 @@ program
     if (!output) throw new Error("Missing output");
 
     await fs.ensureDir(output);
-    await convertPlaylist(input, async (filepath, content) => {
-      await fs.writeFile(join(output, filepath), content);
-      console.log(join(output, filepath));
+    const hash = await convertPlaylist(input, async (filepath, content) => {
+      const path = join(output, filepath);
+      await fs.ensureDir(dirname(path));
+      await fs.writeFile(path, content);
+      console.log(path);
     });
+
+    console.log("\nFinished converting video", hash + ".m3u8");
   });
 
 program
