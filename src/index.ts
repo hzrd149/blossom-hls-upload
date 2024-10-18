@@ -1,12 +1,12 @@
 import { program } from "commander";
 import fs from "fs-extra";
 import mime from "mime";
+import { basename, dirname, join } from "node:path";
+import { BlossomClient } from "blossom-client-sdk";
+import { finalizeEvent, generateSecretKey, nip19 } from "nostr-tools";
 
 import { encodeHLS } from "./ffmpeg.js";
 import { convertPlaylist } from "./convert.js";
-import { basename, dirname, join } from "path";
-import { BlossomClient } from "blossom-client-sdk";
-import { finalizeEvent, generateSecretKey, nip19 } from "nostr-tools";
 
 program
   .command("encode")
